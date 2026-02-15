@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Wheel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; margin: 0; overflow: hidden; }
+        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        #wheel { width: 300px; height: 300px; border-radius: 50%; border: 5px solid #ffd700; transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1); }
+        .btn-spin { margin-top: 20px; padding: 15px 40px; font-size: 20px; background: #ff4500; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 24px; color: #ffd700; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Твій бонус чекає! 🎁</h2>
+        <img id="wheel" src="https://i.imgur.com/vHq0Lz3.png" alt="Wheel">
+        <button class="btn-spin" onclick="spin()">КРУТИТИ!</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Розгортає вікно на весь екран
+
+        function spin() {
+            let wheel = document.getElementById('wheel');
+            // Магія: ми завжди крутимо колесо так, щоб випав виграш
+            let randomDeg = 1800 + 45; // 1800 (5 обертів) + 45 градусів (сектор виграшу)
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+            
+            setTimeout(() => {
+                document.getElementById('result').innerText = "ВИ ВИГРАЛИ 5000 ГРН! 🎉";
+                // Через 2 секунди показуємо кнопку виводу
+                setTimeout(() => {
+                    tg.showConfirm("Для отримання виграшу потрібно підтвердити аккаунт. Перейти до реєстрації?", (ok) => {
+                        if (ok) {
+                            // Тут буде реферальне посилання арбітражника
+                            window.location.href = "https://google.com"; 
+                        }
+                    });
+                }, 1500);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
