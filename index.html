@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gold Fortune</title>
+<title>Gold Fortune Roulette</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
@@ -13,212 +13,211 @@
   box-sizing: border-box;
 }
 body {
-  background: #0F0F12;
+  background: #0a1f0a; /* темно-зелений стіл як у казино */
   font-family: 'Inter', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  color: white;
+  color: #fff;
+  overflow: hidden;
 }
 .app {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
   padding: 20px;
   text-align: center;
 }
-/* WHEEL */
+
+/* Обгортка колеса */
 .wheel-wrapper {
   position: relative;
-  width: 280px;  /* трохи більше для кращого вигляду */
-  height: 280px;
-  margin: 0 auto 35px;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto 40px;
 }
-/* ГОЛОВНИЙ КРУГ З СЕКТОРАМИ ЯК У КАЗИНО */
-.wheel {
-  width: 100%;
-  height: 100%;
+
+/* Зовнішня дерев'яна/золота рамка */
+.wheel-frame {
+  position: absolute;
+  inset: -12px;
   border-radius: 50%;
-  position: relative;
-  /* conic-gradient: 12 секторів з 3 кольорами (золотий, зелений, червоний) */
-  background: conic-gradient(
-    #FFD700 0deg 30deg,    /* Золотий */
-    #1DB954 30deg 60deg,   /* Зелений */
-    #FF4444 60deg 90deg,   /* Червоний */
-    #FFD700 90deg 120deg,
-    #1DB954 120deg 150deg,
-    #FF4444 150deg 180deg,
-    #FFD700 180deg 210deg,
-    #1DB954 210deg 240deg,
-    #FF4444 240deg 270deg,
-    #FFD700 270deg 300deg,
-    #1DB954 300deg 330deg,
-    #FF4444 330deg 360deg
-  );
-  /* Білі лінії між секторами (як у рулетці) */
+  background: radial-gradient(circle at 30% 30%, #d4a017, #b8860b 40%, #8b6914 70%, #5c4609);
   box-shadow: 
-    inset 0 0 0 2px rgba(255,255,255,0.3),  /* внутрішня біла рамка */
-    0 0 35px rgba(245, 199, 107, 0.35),
-    inset 0 0 25px rgba(0,0,0,0.45);
-  /* Оптимізація анімації */
+    0 0 30px rgba(212, 160, 23, 0.6),
+    inset 0 0 20px rgba(0,0,0,0.7);
+  z-index: 1;
+}
+
+/* Саме колесо (сектори + внутрішня частина) */
+.wheel {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: 
+    /* Дерев'яний центр */
+    radial-gradient(circle at 50% 50%, #c19a6b 0%, #a67c52 40%, #8b5a2b 100%),
+    /* Сектори рулетки — червоний/чорний/зелений 0 */
+    conic-gradient(
+      from 0deg,
+      #228B22 0deg 9.7297deg,     /* зелений 0 ~1/37 */
+      #8B0000 9.7297deg 95.135deg, /* червоний */
+      #000000 95.135deg 180.54deg, /* чорний */
+      #8B0000 180.54deg 275.945deg,
+      #000000 275.945deg 360deg
+    );
+  box-shadow: 
+    inset 0 0 40px rgba(0,0,0,0.8),
+    inset 0 0 80px rgba(139,0,0,0.15), /* червоний відтінок */
+    inset 12px 12px 30px rgba(0,0,0,0.6);
   will-change: transform;
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  transition: transform 4s cubic-bezier(.17,.67,.18,1);
+  transition: transform 5s cubic-bezier(0.16, 0.89, 0.32, 1.28);
   transform: rotate(0deg);
+  z-index: 2;
 }
-/* БЛИК НА КОЛІСІ */
-.wheel::after {
+
+/* Золотий блік / відблиск на центрі */
+.wheel::before {
   content: "";
   position: absolute;
-  top: 15%;
-  left: 20%;
-  width: 45%;
-  height: 45%;
-  background: radial-gradient(circle, rgba(255,255,255,0.4), transparent 70%);
+  inset: 20%;
   border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,215,0,0.7), transparent 60%);
   pointer-events: none;
+  z-index: 3;
 }
-/* СТРІЛКА ЗВЕРХУ */
+
+/* Стрілка (фіксована зверху, як у рулетці) */
 .pointer {
   position: absolute;
-  top: -12px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-bottom: 25px solid #F5C76B;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 40px solid #d4af37; /* золотий */
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
   z-index: 10;
 }
-/* RESULT */
+
+/* Результат */
 .result {
-  min-height: 110px;
-  margin-bottom: 25px;
+  min-height: 120px;
+  margin-bottom: 30px;
 }
 .result h2 {
-  font-size: 20px;
-  margin-bottom: 6px;
-  color: #F5C76B;
-}
-.result p {
-  opacity: 0.8;
+  font-size: 22px;
   margin-bottom: 8px;
+  color: #ffd700;
 }
 .amount {
-  font-size: 36px;
+  font-size: 42px;
   font-weight: 700;
-  color: #1DB954;
+  color: #32cd32;
+  text-shadow: 0 0 10px #32cd32;
 }
-/* BUTTONS */
+
+/* Кнопки */
 button {
   width: 100%;
-  padding: 15px;
-  border-radius: 18px;
-  font-size: 15px;
-  font-weight: 600;
+  padding: 16px;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.25s ease;
-  margin-bottom: 14px;
+  transition: all 0.3s;
   border: none;
+  margin-bottom: 16px;
 }
-.btn-primary {
-  background: linear-gradient(135deg, #F5C76B, #C99A3A);
-  color: #0F0F12;
+.btn-spin {
+  background: linear-gradient(135deg, #ffd700, #d4a017);
+  color: #1a1a1a;
 }
-.btn-primary:hover {
-  transform: translateY(-2px);
+.btn-spin:hover { transform: scale(1.04); }
+.btn-claim {
+  background: linear-gradient(135deg, #32cd32, #228b22);
+  color: white;
+  display: none;
 }
-.btn-secondary {
-  background: transparent;
-  border: 2px solid #F5C76B;
-  color: #F5C76B;
-}
-.btn-secondary:hover {
-  background: rgba(245, 199, 107, 0.1);
-}
-.btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.btn-claim:hover { transform: scale(1.04); }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="wheel-wrapper">
+    <div class="wheel-frame"></div>
     <div class="wheel" id="wheel"></div>
     <div class="pointer"></div>
   </div>
+
   <div class="result" id="result">
-    <h2>Крутіть колесо 🎡</h2>
-    <p>Спробуйте свою удачу</p>
+    <h2>Крутіть рулетку 🎰</h2>
+    <p>Випробуйте удачу</p>
   </div>
-  <button class="btn-primary" id="claimBtn" style="display:none;" onclick="claimReward()">
+
+  <button class="btn-claim" id="claimBtn" onclick="claimReward()">
     Забрати виграш
   </button>
-  <button class="btn-secondary" id="spinBtn" onclick="spinWheel()">
+  <button class="btn-spin" id="spinBtn" onclick="spinWheel()">
     Крутити
   </button>
 </div>
+
 <script>
 let rotation = 0;
 let hasSpun = false;
 
 function spinWheel() {
   if (hasSpun) return;
-  
+
   const wheel = document.getElementById('wheel');
   const result = document.getElementById('result');
   const claimBtn = document.getElementById('claimBtn');
   const spinBtn = document.getElementById('spinBtn');
 
-  // Випадковий кут + 5 повних обертів для драматичності
-  const extra = Math.floor(Math.random() * 360) + 1;
-  const targetRotation = rotation + 1800 + extra;
+  const extra = Math.random() * 360;
+  const spins = 5 + Math.floor(Math.random() * 3); // 5–7 повних обертів
+  const target = rotation + (spins * 360) + extra;
 
-  // Підготовка анімації (force reflow)
-  wheel.style.willChange = 'transform';
   wheel.style.transition = 'none';
   wheel.style.transform = `rotate(${rotation}deg)`;
-  wheel.offsetHeight;
+  wheel.offsetHeight; // force reflow
 
-  // Запуск
-  wheel.style.transition = 'transform 4.5s cubic-bezier(0.17, 0.67, 0.18, 1)';
-  wheel.style.transform = `rotate(${targetRotation}deg)`;
+  wheel.style.transition = 'transform 5s cubic-bezier(0.16, 0.89, 0.32, 1.28)';
+  wheel.style.transform = `rotate(${target}deg)`;
 
-  rotation = targetRotation;
+  rotation = target;
   hasSpun = true;
   spinBtn.disabled = true;
   spinBtn.textContent = 'Крутиться...';
 
   setTimeout(() => {
-    // Визначаємо виграш за кольором (опціонально, для реалізму)
-    const finalAngle = targetRotation % 360;
-    let prize = '5000 грн';
-    if (finalAngle > 120 && finalAngle < 240) prize = '10000 грн';  // зелений сектор
-    else if (finalAngle > 240) prize = 'FREE SPIN';  // червоний
+    const finalDeg = target % 360;
+    let prize = '0 грн';
+    // Приклад: зелений 0 — джекпот, червоний — виграш, чорний — програш
+    if (finalDeg < 10 || finalDeg > 350) prize = '5000 грн ×10!';
+    else if (finalDeg % 60 < 30) prize = '2000 грн';
+    else prize = 'Спробуй ще раз';
 
     result.innerHTML = `
-      <h2>Вітаємо 🎉</h2>
-      <p>Ви виграли</p>
+      <h2>Вітаємо! 🎉</h2>
       <div class="amount">${prize}</div>
     `;
     claimBtn.style.display = 'block';
     spinBtn.disabled = false;
-    spinBtn.textContent = 'Крутити ще раз';
-    wheel.style.willChange = 'auto';
-  }, 4600);
+    spinBtn.textContent = 'Крутити ще';
+  }, 5200);
 }
 
 function claimReward() {
-  alert(`Виплату ${document.querySelector('.amount').textContent} оброблено ✅`);
-  // Тут можна скинути колесо для нового спіну
-  location.reload();  // або hasSpun = false;
+  alert("Виплата оброблена! Гроші на рахунку ✅");
+  // Можна додати reset або продовжити гру
 }
 
-// Ініціалізація Telegram
 if (window.Telegram?.WebApp) {
   Telegram.WebApp.ready();
   Telegram.WebApp.expand();
