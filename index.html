@@ -1,130 +1,153 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Casino Spin</title>
-    <style>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Gold Fortune</title>
+      <link rel="stylesheet" href="style.css" />
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    </head>
+ <style>
+                * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
         body {
-            background-color: #121212;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            overflow: hidden;
+          background: #0F0F12;
+          font-family: 'Inter', sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          color: #ffffff;
         }
-
-        .game-box {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        .app {
+          width: 100%;
+          max-width: 420px;
+          text-align: center;
+          padding: 20px;
         }
-
-        /* Стильна золота стрілка замість напису Wheel */
+        
+        /* WHEEL */
+        
+        .wheel-wrapper {
+          position: relative;
+          width: 260px;
+          height: 260px;
+          margin: 0 auto 40px;
+        }
+        
+        .wheel {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: radial-gradient(circle at center, #F5C76B 0%, #C99A3A 60%, #8A6A24 100%);
+          box-shadow:
+            0 0 30px rgba(245, 199, 107, 0.4),
+            inset 0 0 20px rgba(0,0,0,0.4);
+        }
+        
         .pointer {
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            z-index: 10;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+          position: absolute;
+          top: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 12px solid transparent;
+          border-right: 12px solid transparent;
+          border-bottom: 20px solid #F5C76B;
+          filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
         }
-
-        /* Круг без зайвих полів */
-        #wheel {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            user-select: none;
-            -webkit-user-drag: none;
+        
+        /* RESULT */
+        
+        .result h2 {
+          font-weight: 600;
+          font-size: 20px;
+          margin-bottom: 6px;
+          color: #F5C76B;
         }
-
-        .btn-spin {
-            margin-top: 40px;
-            background: linear-gradient(180deg, #ff4e00 0%, #d82a00 100%);
-            border: none;
-            color: white;
-            padding: 16px 60px;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(255, 78, 0, 0.4);
-            text-transform: uppercase;
-            transition: transform 0.1s;
+        
+        .result p {
+          font-size: 16px;
+          opacity: 0.8;
+          margin-bottom: 8px;
         }
-
-        .btn-spin:active { transform: scale(0.95); }
-
-        #result-text {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ffd700;
-            height: 24px;
+        
+        .amount {
+          font-size: 36px;
+          font-weight: 700;
+          margin-bottom: 32px;
+          color: #1DB954;
         }
-
-        /* Кнопка виводу */
-        #payout-btn {
-            display: none;
-            margin-top: 15px;
-            color: #00e5ff;
-            text-decoration: none;
-            font-size: 18px;
-            border: 1px solid #00e5ff;
-            padding: 8px 20px;
-            border-radius: 10px;
+        
+        /* BUTTONS */
+        
+        button {
+          width: 100%;
+          padding: 16px;
+          border-radius: 18px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          margin-bottom: 14px;
         }
-    </style>
-</head>
+        
+        /* PRIMARY */
+        
+        .btn-primary {
+          background: linear-gradient(135deg, #F5C76B, #C99A3A);
+          border: none;
+          color: #0F0F12;
+          box-shadow: 0 8px 20px rgba(245, 199, 107, 0.3);
+        }
+        
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 25px rgba(245, 199, 107, 0.5);
+        }
+        
+        /* SECONDARY */
+        
+        .btn-secondary {
+          background: transparent;
+          border: 2px solid #F5C76B;
+          color: #F5C76B;
+        }
+        
+        .btn-secondary:hover {
+          background: rgba(245, 199, 107, 0.1);
+        }
+     </style>
 <body>
 
-    <div class="game-box">
-        <img src="https://i.ibb.co/S7787f0/pointer.png" class="pointer" alt="v">
-        
-        <img id="wheel" src="wheel.png" alt="Fortune Wheel">
+    <div class="app">
+
+    <div class="wheel-wrapper">
+      <div class="wheel"></div>
+      <div class="pointer"></div>
     </div>
 
-    <div id="result-text"></div>
-    
-    <button class="btn-spin" onclick="spin()">КРУТИТИ!</button>
-    
-    <a href="https://ТВОЄ_ПОСИЛАННЯ.com" id="payout-btn">ЗАБРАТИ 5000 ГРН 💳</a>
+    <div class="result">
+      <h2>Вітаємо 🎉</h2>
+      <p>Ви виграли</p>
+      <div class="amount">5000 грн</div>
+    </div>
 
-    <script>
-        let isSpinning = false;
+    <button class="btn-primary">
+      Забрати 5000 грн
+    </button>
 
-        function spin() {
-            if (isSpinning) return;
-            isSpinning = true;
+    <button class="btn-secondary">
+      Крутити ще раз
+    </button>
 
-            const wheel = document.getElementById('wheel');
-            const result = document.getElementById('result-text');
-            const payout = document.getElementById('payout-btn');
+  </div>
 
-            // Очищаємо попередні написи
-            result.innerText = "";
-            payout.style.display = "none";
-
-            // Випадковий оберт
-            const deg = Math.floor(3000 + Math.random() * 3000);
-            wheel.style.transform = `rotate(${deg}deg)`;
-
-            setTimeout(() => {
-                result.innerText = "ВІТАЄМО! ВИ ВИГРАЛИ 5000 ГРН! 🎉";
-                payout.style.display = "inline-block";
-                isSpinning = false;
-            }, 4000);
-        }
-    </script>
 </body>
 </html>
