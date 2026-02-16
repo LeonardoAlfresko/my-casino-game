@@ -1,61 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortune Wheel</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; margin: 0; overflow: hidden; }
-        .container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        #wheel { width: 300px; height: 300px; border-radius: 50%; border: 5px solid #ffd700; transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1); }
-        .btn-spin { margin-top: 20px; padding: 15px 40px; font-size: 20px; background: #ff4500; color: white; border: none; border-radius: 10px; cursor: pointer; }
-        #result { margin-top: 20px; font-weight: bold; font-size: 24px; color: #ffd700; }
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container { text-align: center; position: relative; }
+
+        /* Стиль колеса */
+        #wheel {
+            width: 320px;
+            height: 320px;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            filter: drop-shadow(0 0 15px #ffd700);
+        }
+
+        .pointer {
+            width: 40px;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .btn-spin {
+            margin-top: 20px;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(180deg, #ff4500, #b22222);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+        }
+
+        .btn-spin:disabled { background: #555; cursor: not-allowed; }
+
+        /* Стиль кнопки виплати */
+        #payout-btn {
+            display: none; /* З'явиться після виграшу */
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: linear-gradient(180deg, #28a745, #1e7e34);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h2>Твій бонус чекає! 🎁</h2>
-        <img id="wheel" src="https://m.slotoking.ua/images/wheel-of-fortune/wheel.png" alt="Wheel">
-        <button class="btn-spin" onclick="spin()">КРУТИТИ!</button>
-        <div id="result"></div>
+        <h1>Твій бонус чекає! 🎁</h1>
+        
+        <img src="https://i.ibb.co/S7787f0/pointer.png" class="pointer" alt="pointer">
+        
+        <img id="wheel" src="https://i.ibb.co/v6m6PZp/wheel.png" alt="Wheel">
+        
+        <br>
+        <button class="btn-spin" id="spin-button" onclick="spinWheel()">КРУТИТИ!</button>
+        
+        <h2 id="result"></h2>
+        
+        <a href="https://ТВОЄ_ПОСИЛАННЯ_НА_КАЗИНО.com" id="payout-btn">ЗАБРАТИ БОНУС 💳</a>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Розгортає вікно на весь екран
+        let isSpinning = false;
 
-        function spin() {
-            let wheel = document.getElementById('wheel');
-            // Магія: ми завжди крутимо колесо так, щоб випав виграш
-            let randomDeg = 1800 + 45; // 1800 (5 обертів) + 45 градусів (сектор виграшу)
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const wheel = document.getElementById('wheel');
+            const button = document.getElementById('spin-button');
+            const resultText = document.getElementById('result');
+            const payoutBtn = document.getElementById('payout-btn');
+
+            button.disabled = true;
             
+            // Випадкова кількість обертів + зупинка на виграшному секторі
+            const randomDegree = Math.floor(Math.random() * 360) + 1800; 
+            wheel.style.transform = `rotate(${randomDegree}deg)`;
+
             setTimeout(() => {
-             // Коли колесо зупинилося
-setTimeout(() => {
-    document.getElementById('result').innerText = "ВИ ВИГРАЛИ 5000 ГРН! 🎉";
-    
-    // Створюємо кнопку "Забрати виграш"
-    let btn = document.createElement("button");
-    btn.innerText = "ЗАБРАТИ НА КАРТУ 💳";
-    btn.className = "btn-spin"; // Використовуємо той самий стиль
-    btn.style.background = "#28a745"; // Зелений колір для успіху
-    
-    btn.onclick = function() {
-        // ТУТ САМЕ ПОСИЛАННЯ. 
-        // В ідеалі арбітражник сам його вставляє.
-        window.location.href = "https://ТВОЄ_РЕФЕРАЛЬНЕ_ПОСИЛАННЯ_НА_КАЗИНО.com"; 
-    };
-    
-    document.querySelector('.container').appendChild(btn);
-}, 4000);
-                            // Тут буде реферальне посилання арбітражника
-                            window.location.href = "https://google.com"; 
-                        }
-                    });
-                }, 1500);
-            }, 4000);
+                resultText.innerText = "ВІТАЄМО! ВИ ВИГРАЛИ 5000 ГРН! 🎉";
+                payoutBtn.style.display = "inline-block"; // Показуємо кнопку виплати
+            }, 4000); // 4 секунди - час анімації
         }
     </script>
 </body>
