@@ -1,153 +1,175 @@
 <!DOCTYPE html>
 <html lang="uk">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Gold Fortune</title>
-      <link rel="stylesheet" href="style.css" />
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    </head>
- <style>
-                * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-        
-        body {
-          background: #0F0F12;
-          font-family: 'Inter', sans-serif;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          color: #ffffff;
-        }
-        
-        .app {
-          width: 100%;
-          max-width: 420px;
-          text-align: center;
-          padding: 20px;
-        }
-        
-        /* WHEEL */
-        
-        .wheel-wrapper {
-          position: relative;
-          width: 260px;
-          height: 260px;
-          margin: 0 auto 40px;
-        }
-        
-        .wheel {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          background: radial-gradient(circle at center, #F5C76B 0%, #C99A3A 60%, #8A6A24 100%);
-          box-shadow:
-            0 0 30px rgba(245, 199, 107, 0.4),
-            inset 0 0 20px rgba(0,0,0,0.4);
-        }
-        
-        .pointer {
-          position: absolute;
-          top: -10px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 0;
-          height: 0;
-          border-left: 12px solid transparent;
-          border-right: 12px solid transparent;
-          border-bottom: 20px solid #F5C76B;
-          filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        }
-        
-        /* RESULT */
-        
-        .result h2 {
-          font-weight: 600;
-          font-size: 20px;
-          margin-bottom: 6px;
-          color: #F5C76B;
-        }
-        
-        .result p {
-          font-size: 16px;
-          opacity: 0.8;
-          margin-bottom: 8px;
-        }
-        
-        .amount {
-          font-size: 36px;
-          font-weight: 700;
-          margin-bottom: 32px;
-          color: #1DB954;
-        }
-        
-        /* BUTTONS */
-        
-        button {
-          width: 100%;
-          padding: 16px;
-          border-radius: 18px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.25s ease;
-          margin-bottom: 14px;
-        }
-        
-        /* PRIMARY */
-        
-        .btn-primary {
-          background: linear-gradient(135deg, #F5C76B, #C99A3A);
-          border: none;
-          color: #0F0F12;
-          box-shadow: 0 8px 20px rgba(245, 199, 107, 0.3);
-        }
-        
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 12px 25px rgba(245, 199, 107, 0.5);
-        }
-        
-        /* SECONDARY */
-        
-        .btn-secondary {
-          background: transparent;
-          border: 2px solid #F5C76B;
-          color: #F5C76B;
-        }
-        
-        .btn-secondary:hover {
-          background: rgba(245, 199, 107, 0.1);
-        }
-     </style>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gold Fortune</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #0F0F12;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: white;
+}
+
+.app {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* WHEEL */
+
+.wheel-wrapper {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto 40px;
+  z-index: 1;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #F5C76B 0%, #C99A3A 60%, #8A6A24 100%);
+  box-shadow:
+    0 0 40px rgba(245, 199, 107, 0.4),
+    inset 0 0 30px rgba(0,0,0,0.4);
+  transition: transform 4s cubic-bezier(.17,.67,.18,1);
+}
+
+.pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 22px solid #F5C76B;
+  z-index: 2;
+}
+
+/* RESULT */
+
+.result h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #F5C76B;
+}
+
+.result p {
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.amount {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 32px;
+  color: #1DB954;
+}
+
+/* BUTTONS */
+
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+  margin-bottom: 14px;
+  border: none;
+  position: relative;
+  z-index: 3;
+}
+
+/* PRIMARY */
+
+.btn-primary {
+  background: linear-gradient(135deg, #F5C76B, #C99A3A);
+  color: #0F0F12;
+  box-shadow: 0 8px 20px rgba(245, 199, 107, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+/* SECONDARY */
+
+.btn-secondary {
+  background: transparent;
+  border: 2px solid #F5C76B;
+  color: #F5C76B;
+}
+
+.btn-secondary:hover {
+  background: rgba(245, 199, 107, 0.1);
+}
+
+</style>
+</head>
 <body>
 
-    <div class="app">
+<div class="app">
 
-    <div class="wheel-wrapper">
-      <div class="wheel"></div>
-      <div class="pointer"></div>
-    </div>
-
-    <div class="result">
-      <h2>Вітаємо 🎉</h2>
-      <p>Ви виграли</p>
-      <div class="amount">5000 грн</div>
-    </div>
-
-    <button class="btn-primary">
-      Забрати 5000 грн
-    </button>
-
-    <button class="btn-secondary">
-      Крутити ще раз
-    </button>
-
+  <div class="wheel-wrapper">
+    <div class="wheel" id="wheel"></div>
+    <div class="pointer"></div>
   </div>
+
+  <div class="result">
+    <h2>Вітаємо 🎉</h2>
+    <p>Ви виграли</p>
+    <div class="amount">5000 грн</div>
+  </div>
+
+  <button class="btn-primary" onclick="claimReward()">
+    Забрати 5000 грн
+  </button>
+
+  <button class="btn-secondary" onclick="spinWheel()">
+    Крутити ще раз
+  </button>
+
+</div>
+
+<script>
+
+let rotation = 0;
+
+function spinWheel() {
+  const wheel = document.getElementById('wheel');
+
+  const extraSpin = Math.floor(Math.random() * 360);
+  rotation += 1440 + extraSpin; // 4 оберти + випадковий кут
+
+  wheel.style.transform = `rotate(${rotation}deg)`;
+}
+
+function claimReward() {
+  alert("Виплату оброблено ✅");
+}
+
+</script>
 
 </body>
 </html>
