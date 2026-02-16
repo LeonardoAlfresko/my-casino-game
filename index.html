@@ -2,109 +2,126 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Fortune</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Casino Spin</title>
     <style>
         body {
-            background-color: #1a1a1a;
-            color: white;
-            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 0;
+            color: white;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
         }
 
-        .wheel-container {
+        .game-box {
             position: relative;
             width: 320px;
             height: 320px;
-            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* КОЛЕСО - тепер береться прямо з твого GitHub */
+        /* Стильна золота стрілка замість напису Wheel */
+        .pointer {
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+
+        /* Круг без зайвих полів */
         #wheel {
             width: 100%;
             height: 100%;
+            object-fit: contain;
             transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.3));
+            user-select: none;
+            -webkit-user-drag: none;
         }
 
-        /* СТРІЛКА */
-        .pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 45px;
-            z-index: 10;
-        }
-
-        /* КНОПКА КРУТИТИ */
         .btn-spin {
-            background: linear-gradient(180deg, #ff4e00, #d82a00);
-            color: white;
+            margin-top: 40px;
+            background: linear-gradient(180deg, #ff4e00 0%, #d82a00 100%);
             border: none;
-            padding: 18px 70px;
-            font-size: 24px;
+            color: white;
+            padding: 16px 60px;
+            font-size: 22px;
             font-weight: bold;
-            border-radius: 40px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(255, 78, 0, 0.5);
+            box-shadow: 0 4px 20px rgba(255, 78, 0, 0.4);
             text-transform: uppercase;
+            transition: transform 0.1s;
         }
 
         .btn-spin:active { transform: scale(0.95); }
 
-        /* РЕЗУЛЬТАТ ТА КНОПКА ВИВОДУ */
-        #result { margin-top: 20px; font-size: 18px; color: #ffd700; min-height: 24px; }
-        
-        #payout-link {
+        #result-text {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+            height: 24px;
+        }
+
+        /* Кнопка виводу */
+        #payout-btn {
             display: none;
             margin-top: 15px;
             color: #00e5ff;
-            text-decoration: underline;
-            font-weight: bold;
+            text-decoration: none;
             font-size: 18px;
+            border: 1px solid #00e5ff;
+            padding: 8px 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Твій бонус чекає! 🎁</h1>
-
-    <div class="wheel-container">
-        <img src="https://i.ibb.co/S7787f0/pointer.png" class="pointer" onerror="this.style.display='none'">
+    <div class="game-box">
+        <img src="https://i.ibb.co/S7787f0/pointer.png" class="pointer" alt="v">
         
-        <img id="wheel" src="wheel.png" alt="Wheel">
+        <img id="wheel" src="wheel.png" alt="Fortune Wheel">
     </div>
 
+    <div id="result-text"></div>
+    
     <button class="btn-spin" onclick="spin()">КРУТИТИ!</button>
     
-    <div id="result"></div>
-    <a href="https://google.com" id="payout-link">ЗАБРАТИ БОНУС 💳</a>
+    <a href="https://ТВОЄ_ПОСИЛАННЯ.com" id="payout-btn">ЗАБРАТИ 5000 ГРН 💳</a>
 
     <script>
         let isSpinning = false;
+
         function spin() {
             if (isSpinning) return;
             isSpinning = true;
-            
+
             const wheel = document.getElementById('wheel');
-            const result = document.getElementById('result');
-            const link = document.getElementById('payout-link');
-            
-            const randomDeg = Math.floor(3000 + Math.random() * 3000);
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
-            
-            result.innerText = "Обертаємо...";
+            const result = document.getElementById('result-text');
+            const payout = document.getElementById('payout-btn');
+
+            // Очищаємо попередні написи
+            result.innerText = "";
+            payout.style.display = "none";
+
+            // Випадковий оберт
+            const deg = Math.floor(3000 + Math.random() * 3000);
+            wheel.style.transform = `rotate(${deg}deg)`;
 
             setTimeout(() => {
                 result.innerText = "ВІТАЄМО! ВИ ВИГРАЛИ 5000 ГРН! 🎉";
-                link.style.display = "block";
+                payout.style.display = "inline-block";
                 isSpinning = false;
             }, 4000);
         }
