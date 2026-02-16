@@ -3,33 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortune Wheel</title>
+    <title>Gold Fortune Wheel</title>
     <style>
         body {
-            background-color: #1a1a1a;
+            background-color: #121212;
             color: white;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
+            background-image: radial-gradient(circle, #222 10%, #121212 90%);
         }
 
-        .container { text-align: center; position: relative; }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
 
-        /* Стиль колеса */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .wheel-box {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+
+        /* САМЕ КОЛЕСО */
         #wheel {
-            width: 320px;
-            height: 320px;
-            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
-            filter: drop-shadow(0 0 15px #ffd700);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4); /* Золотисте сяйво */
+            transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1);
+            display: block;
         }
 
         .pointer {
-            width: 40px;
+            width: 45px;
             position: absolute;
             top: -10px;
             left: 50%;
@@ -37,38 +55,29 @@
             z-index: 10;
         }
 
+        /* КНОПКА КРУТИТИ */
         .btn-spin {
-            margin-top: 20px;
-            padding: 15px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            background: linear-gradient(180deg, #ff4500, #b22222);
+            background: linear-gradient(to bottom, #ff4e00, #ec2f06);
             border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
-        }
-
-        .btn-spin:disabled { background: #555; cursor: not-allowed; }
-
-        /* Стиль кнопки виплати */
-        #payout-btn {
-            display: none; /* З'явиться після виграшу */
-            margin-top: 20px;
-            padding: 15px 30px;
-            background: linear-gradient(180deg, #28a745, #1e7e34);
             color: white;
-            border-radius: 10px;
-            text-decoration: none;
+            padding: 15px 60px;
+            font-size: 22px;
             font-weight: bold;
-            animation: pulse 1.5s infinite;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 47, 6, 0.5);
+            text-transform: uppercase;
+            transition: 0.3s;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        .btn-spin:active {
+            transform: scale(0.95);
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ffd700;
         }
     </style>
 </head>
@@ -77,40 +86,35 @@
     <div class="container">
         <h1>Твій бонус чекає! 🎁</h1>
         
-        <img src="https://i.ibb.co/S7787f0/pointer.png" class="pointer" alt="pointer">
-        
-        <img id="wheel" src="https://i.ibb.co/v6m6PZp/wheel.png" alt="Wheel">
-        
+        <div class="wheel-box">
+            <img src="https://www.pngarts.com/files/3/Game-Arrow-PNG-Transparent-Image.png" class="pointer">
+            
+            <img id="wheel" src="https://i.ibb.co/v6m6PZp/wheel.png" 
+                 onerror="this.src='https://i.imgur.com/uG93ZUX.png'">
+        </div>
+
         <br>
-        <button class="btn-spin" id="spin-button" onclick="spinWheel()">КРУТИТИ!</button>
-        
-        <h2 id="result"></h2>
-        
+        <button class="btn-spin" onclick="spin()">КРУТИТИ!</button>
+        <p id="result"></p>
         <a href="https://leonardoalfresko.github.io/my-casino-game/" id="payout-btn">ЗАБРАТИ БОНУС 💳</a>
     </div>
 
     <script>
-        let isSpinning = false;
-
-        function spinWheel() {
-            if (isSpinning) return;
-            isSpinning = true;
-
-            const wheel = document.getElementById('wheel');
-            const button = document.getElementById('spin-button');
-            const resultText = document.getElementById('result');
-            const payoutBtn = document.getElementById('payout-btn');
-
-            button.disabled = true;
+        let spinning = false;
+        function spin() {
+            if (spinning) return;
+            spinning = true;
             
-            // Випадкова кількість обертів + зупинка на виграшному секторі
-            const randomDegree = Math.floor(Math.random() * 360) + 1800; 
-            wheel.style.transform = `rotate(${randomDegree}deg)`;
-
+            const wheel = document.getElementById('wheel');
+            const deg = Math.floor(5000 + Math.random() * 5000); // Велика кількість обертів
+            
+            wheel.style.transform = `rotate(${deg}deg)`;
+            
             setTimeout(() => {
-                resultText.innerText = "ВІТАЄМО! ВИ ВИГРАЛИ 5000 ГРН! 🎉";
-                payoutBtn.style.display = "inline-block"; // Показуємо кнопку виплати
-            }, 4000); // 4 секунди - час анімації
+                document.getElementById('result').innerText = "ВИ ВИГРАЛИ 5000 ГРН! 🎉";
+                spinning = false;
+                // Тут можна додати перехід на посилання
+            }, 4000);
         }
     </script>
 </body>
