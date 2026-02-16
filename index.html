@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <title>Gold Fortune</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -146,6 +147,11 @@ button {
 .btn-secondary:hover {
   background: rgba(245, 199, 107, 0.1);
 }
+  .wheel {
+  will-change: transform;          /* дуже допомагає з плавністю rotate */
+  backface-visibility: hidden;     /* прибирає мерехтіння в деяких WebView */
+  transform-style: preserve-3d;
+}
 
 </style>
 </head>
@@ -174,29 +180,37 @@ button {
 </div>
 
 <script>
-
+// Ініціалізація Telegram Mini App
+if (window.Telegram?.WebApp) {
+  Telegram.WebApp.ready();       // ховає лоадер Telegram
+  Telegram.WebApp.expand();      // розгортає на весь екран (дуже важливо!)
+  // Telegram.WebApp.requestFullscreen();  // якщо хочеш повноекранний режим (опціонально)
+}
 let rotation = 0;
 let hasSpun = false;
 
 function spinWheel() {
-
   if (hasSpun) return;
-
+  
   const wheel = document.getElementById('wheel');
   const result = document.getElementById('result');
   const claimBtn = document.getElementById('claimBtn');
 
-  const extraSpin = Math.floor(Math.random() * 360);
-  rotation += 1440 + extraSpin;
+  // Випадковий кут + 4 повних оберти
+  const extra = Math.floor(Math.random() * 360) + 1;
+  const targetRotation = rotation + 1440 + extra;
 
-  // FORCE REPAINT (важливо для Telegram)
-  wheel.style.transition = "none";
-  wheel.style.transform = `rotate(${rotation - 1}deg)`;
-  wheel.offsetHeight; // тригер перерахунку
-
-  wheel.style.transition = "transform 4s cubic-bezier(.17,.67,.18,1)";
+  // Підготовка: force reflow + оптимізація
+  wheel.style.willChange = 'transform';  // покращує продуктивність анімації
+  wheel.style.transition = 'none';
   wheel.style.transform = `rotate(${rotation}deg)`;
+  wheel.offsetHeight; // force reflow
 
+  // Запуск анімації
+  wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.18, 1)';
+  wheel.style.transform = `rotate(${targetRotation}deg)`;
+
+  rotation = targetRotation; // оновлюємо для наступного разу
   hasSpun = true;
 
   setTimeout(() => {
@@ -205,8 +219,9 @@ function spinWheel() {
       <p>Ви виграли</p>
       <div class="amount">5000 грн</div>
     `;
-    claimBtn.style.display = "block";
-  }, 4000);
+    claimBtn.style.display = 'block';
+    wheel.style.willChange = 'auto'; // прибираємо після анімації
+  }, 4200); // трохи більше 4s, щоб точно дочекатися кінця
 }
 
 function claimReward() {
