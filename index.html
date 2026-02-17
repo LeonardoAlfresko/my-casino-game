@@ -62,13 +62,27 @@
             box-shadow: inset 0 0 15px rgba(0,0,0,1);
         }
 
-        #wheel {
-            width: 101%; /* Трішки більше, щоб не було білих щілин */
-            height: 101%;
-            object-fit: cover;
-            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
-            will-change: transform;
-        }
+       /* Видаляємо стару червону мітку і ставимо золотий трикутник */
+.pointer {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid #ffd700; /* Золотий колір */
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+}
+
+/* Центрування для ідеального обертання */
+#wheel {
+    display: block;
+    margin: 0 auto;
+    transform-origin: center center; /* Точка обертання рівно по центру */
+}
 
         /* Центральна заглушка, щоб приховати центр картинки */
         .center-pin {
