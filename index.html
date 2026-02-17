@@ -1,187 +1,146 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gold Fortune Wheel</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: #0a1f0a; /* темно-зелений казино */
-  font-family: 'Inter', sans-serif;
-  min-height: 100vh;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.app {
-  width: 100%;
-  max-width: 380px;
-  padding: 20px;
-  text-align: center;
-}
-.wheel-wrapper {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  margin: 0 auto 30px;
-}
-.wheel-frame {
-  position: absolute;
-  inset: -15px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #d4a017, #b8860b, #8b6914);
-  box-shadow: 0 0 40px rgba(212,160,23,0.5), inset 0 0 25px rgba(0,0,0,0.8);
-  z-index: 1;
-}
-.wheel {
-  position: absolute;
-  inset: 15px;
-  border-radius: 50%;
-  background:
-    conic-gradient(
-      #8B0000 0deg 30deg,    /* червоний WIN */
-      #000000 30deg 60deg,   /* чорний WIN */
-      #8B0000 60deg 90deg,
-      #000000 90deg 120deg,
-      #8B0000 120deg 150deg,
-      #000000 150deg 180deg,
-      #8B0000 180deg 210deg,
-      #000000 210deg 240deg,
-      #8B0000 240deg 270deg,
-      #000000 270deg 300deg, /* тут починаються LOSE */
-      #FF4500 300deg 330deg, /* LOSE помаранчевий */
-      #FF4500 330deg 360deg
-    );
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.9), inset 0 0 100px rgba(139,0,0,0.2);
-  will-change: transform;
-  transition: transform 4.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-  transform: rotate(0deg);
-  z-index: 2;
-}
-.center-hub {
-  position: absolute;
-  inset: 35%;
-  background: radial-gradient(circle at 30% 30%, #ffd700, #d4af37, #b8860b);
-  border-radius: 50%;
-  box-shadow: inset 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(212,160,23,0.6);
-  z-index: 5;
-}
-.pointer {
-  position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 45px solid #ffd700;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.7));
-  z-index: 10;
-}
-.result {
-  min-height: 140px;
-  margin: 20px 0;
-}
-h2 { font-size: 24px; color: #ffd700; margin-bottom: 10px; }
-.amount { font-size: 48px; font-weight: 700; color: #00ff7f; text-shadow: 0 0 15px #00ff7f; }
-button {
-  width: 100%;
-  padding: 16px;
-  margin: 12px 0;
-  border: none;
-  border-radius: 25px;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-#claimBtn {
-  background: linear-gradient(#32cd32, #228b22);
-  color: white;
-  display: none;
-}
-#spinBtn {
-  background: linear-gradient(#ffd700, #d4a017);
-  color: #1a1a1a;
-}
-button:hover { transform: scale(1.05); }
-button:disabled { opacity: 0.6; cursor: not-allowed; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Wheel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        
+        body {
+            background: #1a1a1a; /* Темний фон під тему Telegram */
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Контейнер, який обрізає кути */
+        .wheel-wrapper {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            overflow: hidden; /* Це прибирає кути */
+            border: 5px solid #ffd700; /* Золота рамка навколо колеса */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 4.5s cubic-bezier(0.15, 0, 0.15, 1);
+            will-change: transform;
+        }
+
+        .pointer {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff0000; /* Червоний вказівник */
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+
+        .result { height: 80px; margin-bottom: 20px; }
+        
+        h2 { color: #ffd700; margin-bottom: 5px; }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(#ffd700, #d4a017);
+            color: #1a1a1a;
+            transition: 0.2s;
+        }
+
+        button:disabled { opacity: 0.5; }
+    </style>
 </head>
 <body>
+
 <div class="app">
-  <div class="wheel-wrapper">
-    <div class="wheel-frame"></div>
-    <div class="wheel" id="wheel"></div>
-    <div class="center-hub"></div>
-    <div class="pointer"></div>
-  </div>
+    <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <img src="wheel.png" id="wheel" alt="Колесо">
+    </div>
 
-  <div class="result" id="result">
-    <h2>Крутіть колесо! 🎡</h2>
-    <p>Випробуйте удачу</p>
-  </div>
+    <div class="result" id="result">
+        <h2 id="statusText">Крути та вигравай!</h2>
+    </div>
 
-  <button id="claimBtn" onclick="claimReward()">Забрати виграш</button>
-  <button id="spinBtn" onclick="spinWheel()">Крутити</button>
+    <button id="spinBtn" onclick="spinWheel()">КРУТИТИ</button>
 </div>
 
 <script>
-let rotation = 0;
-let isSpinning = false;
+    let currentRotation = 0;
+    let isSpinning = false;
 
-function spinWheel() {
-  if (isSpinning) return;
-  isSpinning = true;
+    function spinWheel() {
+        if (isSpinning) return;
+        isSpinning = true;
 
-  const wheel = document.getElementById('wheel');
-  const spinBtn = document.getElementById('spinBtn');
-  const claimBtn = document.getElementById('claimBtn');
-  const result = document.getElementById('result');
+        const wheel = document.getElementById('wheel');
+        const btn = document.getElementById('spinBtn');
+        const status = document.getElementById('statusText');
 
-  spinBtn.disabled = true;
-  spinBtn.textContent = 'Крутиться...';
+        btn.disabled = true;
+        status.textContent = "Удача близько...";
 
-  // Багато обертів + зупинка завжди на WIN (наприклад, на секторі ~45°)
-  const fullSpins = 5 + Math.floor(Math.random() * 3); // 5-7 повних
-  const targetExtra = 45 + Math.random() * 20; // завжди в зоні WIN (червоний/чорний)
-  const targetRotation = rotation + (fullSpins * 360) + targetExtra;
+        // Робимо мінімум 5 повних обертів + випадковий кут
+        const randomDegree = Math.floor(Math.random() * 360);
+        const totalRotation = currentRotation + 1800 + randomDegree; 
+        
+        wheel.style.transform = `rotate(${totalRotation}deg)`;
+        currentRotation = totalRotation;
 
-  wheel.style.transition = 'none';
-  wheel.style.transform = `rotate(${rotation}deg)`;
-  wheel.offsetHeight; // reflow
+        setTimeout(() => {
+            isSpinning = false;
+            btn.disabled = false;
+            status.textContent = "Спробуй ще!";
+            
+            // Визначаємо результат (Win/Lose)
+            // Оскільки сектори чередуються, використовуємо залишок від ділення
+            const finalAngle = totalRotation % 360;
+            // Логіка залежить від того, як стоять сектори на вашому фото
+            if (finalAngle % 60 > 30) { 
+                status.innerHTML = "ВИГРАШ! 🎉";
+            } else {
+                status.innerHTML = "МАЙЖЕ! 🍀";
+            }
+        }, 4500);
+    }
 
-  wheel.style.transition = 'transform 4.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
-  wheel.style.transform = `rotate(${targetRotation}deg)`;
-
-  rotation = targetRotation;
-
-  setTimeout(() => {
-    result.innerHTML = `
-      <h2>Вітаємо! 🎉</h2>
-      <div class="amount">2000 грн</div>
-    `;
-    claimBtn.style.display = 'block';
-    spinBtn.textContent = 'Крутити ще';
-    spinBtn.disabled = false;
-    isSpinning = false;
-  }, 4600);
-}
-
-function claimReward() {
-  alert("Виграш 2000 грн зараховано! ✅");
-  // Можна додати reset або перейти далі
-}
-
-if (window.Telegram?.WebApp) {
-  Telegram.WebApp.ready();
-  Telegram.WebApp.expand();
-}
+    // Ініціалізація Telegram WebApp
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+    }
 </script>
+
 </body>
 </html>
