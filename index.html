@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortune Wheel</title>
+    <title>Golden Wheel</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         
         body {
-            background: #1a1a1a; /* Темний фон під тему Telegram */
-            font-family: sans-serif;
+            background: #0f0f0f;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,80 +21,122 @@
 
         .app {
             width: 100%;
-            max-width: 350px;
-            text-align: center;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             padding: 20px;
         }
 
-        /* Контейнер, який обрізає кути */
-       .wheel-wrapper {
+        /* ЗОЛОТИЙ КОРПУС КОЛЕСА */
+        .wheel-outer-frame {
             position: relative;
-            width: 320px;  /* Можна трохи збільшити */
+            width: 320px;
             height: 320px;
-            margin: 0 auto 30px;
             border-radius: 50%;
-            overflow: hidden; 
-            border: 4px solid #ffd700;
-            box-shadow: 0 0 25px rgba(212, 160, 23, 0.4);
-            background: #000; /* Фон контейнера, якщо картинка десь не дістає */
+            /* Створюємо ефект золотого металу */
+            background: conic-gradient(
+                #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f
+            );
+            padding: 12px; /* Товщина золотої рамки */
+            box-shadow: 0 0 50px rgba(184, 134, 11, 0.3), 
+                        inset 0 0 20px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Внутрішня частина, яка обрізає картинку */
+        .wheel-inner-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Внутрішня тінь для об'єму */
+            box-shadow: inset 0 0 15px rgba(0,0,0,1);
         }
 
         #wheel {
-            width: 100%;
-            height: 100%;
-            display: block;
-            /* Розтягує картинку так, щоб вона заповнила все коло */
-            object-fit: cover; 
-            /* Невеликий зум, щоб прибрати можливі тонкі білі лінії по краях */
-            transform: scale(1.02); 
-            transition: transform 4.5s cubic-bezier(0.15, 0, 0.15, 1);
+            width: 101%; /* Трішки більше, щоб не було білих щілин */
+            height: 101%;
+            object-fit: cover;
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
             will-change: transform;
         }
 
+        /* Центральна заглушка, щоб приховати центр картинки */
+        .center-pin {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #fcf6ba 0%, #bf953f 100%);
+            border-radius: 50%;
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.5);
+            border: 2px solid #8b6914;
+        }
+
+        /* Вказівник */
         .pointer {
             position: absolute;
-            top: 10px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            z-index: 10;
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #ff0000; /* Червоний вказівник */
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+            z-index: 20;
+            width: 40px;
+            height: 50px;
+            /* Малюємо гарну стрілку */
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            background: linear-gradient(to bottom, #ff4e50, #f9d423);
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
         }
 
-        .result { height: 80px; margin-bottom: 20px; }
-        
-        h2 { color: #ffd700; margin-bottom: 5px; }
+        .result-box {
+            height: 100px;
+            text-align: center;
+        }
+
+        h2 { font-size: 28px; color: #fcf6ba; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
         button {
-            width: 100%;
-            padding: 18px;
+            width: 250px;
+            padding: 20px;
             border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
+            border-radius: 50px;
+            font-size: 20px;
+            font-weight: 800;
             cursor: pointer;
-            background: linear-gradient(#ffd700, #d4a017);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(145deg, #bf953f, #b38728);
             color: #1a1a1a;
-            transition: 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            transition: 0.3s;
         }
 
-        button:disabled { opacity: 0.5; }
+        button:active { transform: scale(0.95); }
+        button:disabled { opacity: 0.5; filter: grayscale(1); }
     </style>
 </head>
 <body>
 
 <div class="app">
-    <div class="wheel-wrapper">
+    <div class="wheel-outer-frame">
         <div class="pointer"></div>
-        <img src="wheel.png" id="wheel" alt="Колесо">
+        <div class="center-pin"></div>
+        <div class="wheel-inner-container">
+            <img src="wheel.png" id="wheel" alt="Wheel">
+        </div>
     </div>
 
-    <div class="result" id="result">
-        <h2 id="statusText">Крути та вигравай!</h2>
+    <div class="result-box">
+        <h2 id="statusText">УДАЧІ! 🎡</h2>
     </div>
 
     <button id="spinBtn" onclick="spinWheel()">КРУТИТИ</button>
@@ -113,11 +155,12 @@
         const status = document.getElementById('statusText');
 
         btn.disabled = true;
-        status.textContent = "Удача близько...";
+        status.style.opacity = "0.5";
+        status.textContent = "КРУТИМО...";
 
-        // Робимо мінімум 5 повних обертів + випадковий кут
-        const randomDegree = Math.floor(Math.random() * 360);
-        const totalRotation = currentRotation + 1800 + randomDegree; 
+        // Велика кількість обертів + випадковий кут
+        const extraDegrees = Math.floor(Math.random() * 360);
+        const totalRotation = currentRotation + (360 * 8) + extraDegrees;
         
         wheel.style.transform = `rotate(${totalRotation}deg)`;
         currentRotation = totalRotation;
@@ -125,25 +168,25 @@
         setTimeout(() => {
             isSpinning = false;
             btn.disabled = false;
-            status.textContent = "Спробуй ще!";
+            status.style.opacity = "1";
             
-            // Визначаємо результат (Win/Lose)
-            // Оскільки сектори чередуються, використовуємо залишок від ділення
-            const finalAngle = totalRotation % 360;
-            // Логіка залежить від того, як стоять сектори на вашому фото
-            if (finalAngle % 60 > 30) { 
-                status.innerHTML = "ВИГРАШ! 🎉";
+            // Логіка визначення Win/Lose (для 12 секторів)
+            const actualAngle = (360 - (totalRotation % 360)) % 360;
+            const sector = Math.floor(actualAngle / 30);
+            
+            if (sector % 2 === 0) {
+                status.innerHTML = "WIN! 💰";
+                status.style.color = "#00ff7f";
             } else {
-                status.innerHTML = "МАЙЖЕ! 🍀";
+                status.innerHTML = "LOSE! 🛑";
+                status.style.color = "#ff4e50";
             }
-        }, 4500);
+        }, 5000);
     }
 
-    // Ініціалізація Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
     }
 </script>
 
