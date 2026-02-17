@@ -143,6 +143,29 @@
 </div>
 
 <script>
+    let hasSpun = localStorage.getItem('hasSpun') === 'true';
+
+function spinWheel() {
+    if (isSpinning || hasSpun) {
+        Telegram.WebApp.showAlert("Ви вже використали свою спробу на сьогодні!");
+        return;
+    }
+    
+    // ... твій код обертання ...
+
+    setTimeout(() => {
+        hasSpun = true;
+        localStorage.setItem('hasSpun', 'true'); // Зберігаємо стан
+        
+        const result = (currentRotation % 360 > 180) ? "Win" : "Lose";
+        
+        // Відправляємо дані боту
+        Telegram.WebApp.sendData(JSON.stringify({
+            action: "wheel_spin",
+            result: result
+        }));
+    }, 5000);
+}
     let currentRotation = 0;
     let isSpinning = false;
 
